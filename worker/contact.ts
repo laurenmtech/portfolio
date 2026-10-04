@@ -52,9 +52,9 @@ contact.post('/', async (c) => {
     'Sent from the contact form on your portfolio. Reply to this email to answer them directly.',
   ];
   const email = {
-    from: c.env.CONTACT_FROM,
-    to: [c.env.CONTACT_TO],
-    reply_to: form.email,
+    from: { name: 'Portfolio contact form', email: c.env.CONTACT_FROM },
+    to: c.env.CONTACT_TO,
+    replyTo: { name: form.name, email: form.email },
     subject: `Portfolio: ${topic} — ${form.name}`,
     text: lines.join('\n'),
   };
@@ -64,14 +64,11 @@ contact.post('/', async (c) => {
     return reply({ ok: true });
   }
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${c.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(email),
-  });
-  if (!res.ok) {
-    // Log the status only. The message body is personal data and never gets logged.
-    console.error(`[contact] Resend returned ${res.status}`);
+  try {
+    await c.env.SEND_EMAIL.send(email);
+  } catch (err) {
+    // Log the reason only. The message itself is personal data and never gets logged.
+    console.error('[contact] send failed:', err instanceof Error ? err.message : 'unknown');
     return reply({ ok: false, error: 'send_failed' }, 502);
   }
   return reply({ ok: true });

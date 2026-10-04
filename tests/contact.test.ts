@@ -16,14 +16,15 @@ const valid = {
 };
 
 let allow = true;
+let sendMock: ReturnType<typeof vi.fn>;
 const env = (over: Partial<Env> = {}): Env =>
   ({
     ASSETS: {} as Fetcher,
     CONTACT_LIMITER: { limit: async () => ({ success: allow }) },
+    SEND_EMAIL: { send: sendMock },
     TURNSTILE_SECRET: 'secret',
-    RESEND_API_KEY: 're_test',
     CONTACT_TO: 'me@example.com',
-    CONTACT_FROM: 'Portfolio <onboarding@resend.dev>',
+    CONTACT_FROM: 'contact@site.test',
     MAIL_MODE: 'send',
     ...over,
   }) as Env;
@@ -41,32 +42,35 @@ const post = (body: unknown, headers: Record<string, string> = {}, e = env()) =>
 
 let fetchMock: ReturnType<typeof vi.fn>;
 let turnstileOk = true;
-let resendStatus = 200;
+let sendFails = false;
 
 beforeEach(() => {
   allow = true;
   turnstileOk = true;
-  resendStatus = 200;
+  sendFails = false;
+  sendMock = vi.fn(async () => {
+    if (sendFails) throw new Error('destination address not verified');
+    return { messageId: 'm1' };
+  });
   fetchMock = vi.fn(async (url: string) => {
     if (url.includes('turnstile')) return Response.json({ success: turnstileOk });
-    if (url.includes('resend')) return new Response('{}', { status: resendStatus });
     throw new Error(`unexpected fetch ${url}`);
   });
   vi.stubGlobal('fetch', fetchMock);
 });
 afterEach(() => vi.unstubAllGlobals());
 
-const resendCalls = () => fetchMock.mock.calls.filter(([u]) => String(u).includes('resend'));
 
 describe('POST /api/contact', () => {
   it('sends a valid message with the visitor as reply-to', async () => {
     const res = await post(valid);
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
-    expect(resendCalls()).toHaveLength(1);
-    const sent = JSON.parse(resendCalls()[0]![1].body);
-    expect(sent.to).toEqual(['me@example.com']);
-    expect(sent.reply_to).toBe('ada@example.com');
+    expect(sendMock).toHaveBeenCalledTimes(1);
+    const sent = sendMock.mock.calls[0]![0];
+    expect(sent.to).toBe('me@example.com');
+    expect(sent.from.email).toBe('contact@site.test');
+    expect(sent.replyTo).toEqual({ name: 'Ada', email: 'ada@example.com' });
     expect(sent.subject).toBe('Portfolio: A web app — Ada');
     expect(sent.text).toContain('Budget: $2k–5k');
   });
@@ -78,6 +82,7 @@ describe('POST /api/contact', () => {
     expect(body.error).toBe('invalid');
     expect(Object.keys(body.fields).sort()).toEqual(['email', 'message']);
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('rejects a newline in the name (header injection)', async () => {
@@ -89,6 +94,7 @@ describe('POST /api/contact', () => {
     const res = await post({ ...valid, website: 'http://spam.test' });
     expect(await res.json()).toEqual({ ok: true });
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('blocks a failed Turnstile check', async () => {
@@ -96,13 +102,14 @@ describe('POST /api/contact', () => {
     const res = await post(valid);
     expect(res.status).toBe(403);
     expect((await json(res)).error).toBe('bot_check_failed');
-    expect(resendCalls()).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('blocks a missing Turnstile token without calling Cloudflare', async () => {
     const res = await post({ ...valid, turnstileToken: '' });
     expect(res.status).toBe(403);
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('rate limits', async () => {
@@ -110,12 +117,14 @@ describe('POST /api/contact', () => {
     const res = await post(valid);
     expect(res.status).toBe(429);
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('rejects cross-origin posts', async () => {
     const res = await post(valid, { Origin: 'https://evil.test' });
     expect(res.status).toBe(403);
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it('rejects a malformed body', async () => {
@@ -123,18 +132,21 @@ describe('POST /api/contact', () => {
     expect(res.status).toBe(400);
   });
 
-  it('reports a Resend failure as send_failed', async () => {
-    resendStatus = 500;
+  it('reports a send failure as send_failed without logging the message', async () => {
+    sendFails = true;
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     const res = await post(valid);
     expect(res.status).toBe(502);
     expect((await json(res)).error).toBe('send_failed');
+    expect(JSON.stringify(error.mock.calls)).not.toContain('booking app');
+    error.mockRestore();
   });
 
   it('logs instead of sending in MAIL_MODE=log', async () => {
     const log = vi.spyOn(console, 'log').mockImplementation(() => {});
     const res = await post(valid, {}, env({ MAIL_MODE: 'log' }));
     expect(await res.json()).toEqual({ ok: true });
-    expect(resendCalls()).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
     log.mockRestore();
   });
 });
