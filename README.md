@@ -10,7 +10,7 @@ Spec and build plan: `../spec.html`, `../plan.html`.
 | `pnpm dev` | Astro dev server (pages only, no `/api`) at `localhost:4321` |
 | `pnpm preview` | Build, then run the real Worker locally with `/api` at `localhost:8787` |
 | `pnpm typecheck` | `astro check` + typecheck the Worker |
-| `pnpm deploy` | Build and deploy to Cloudflare |
+| `pnpm run deploy` | Build and deploy to Cloudflare |
 
 ## Layout
 
