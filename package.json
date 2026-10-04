@@ -9,9 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro build && wrangler dev",
-    "typecheck": "astro check && tsc -p worker",
+    "typecheck": "astro check && tsc -p worker && tsc -p tests",
     "deploy": "astro build && wrangler deploy",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
@@ -31,6 +32,7 @@
     "@astrojs/check": "^0.9.10",
     "@cloudflare/workers-types": "^5.20261004.1",
     "typescript": "^6.0.3",
+    "vitest": "^5.0.3",
     "wrangler": "^4.147.0"
   },
   "packageManager": "pnpm@9.15.9"

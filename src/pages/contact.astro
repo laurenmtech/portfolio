@@ -1,18 +1,230 @@
 ---
 import Base from '../layouts/Base.astro';
+import { BUDGETS, CLIENT_TOPICS, CONTACT_TOPICS } from '../lib/schemas';
+import { TURNSTILE_SITE_KEY } from '../config';
+
+const field =
+  'mt-1.5 block w-full rounded-xl border border-line bg-paper px-3.5 py-2.5 text-base text-ink placeholder:text-ink-2/70 focus:border-accent focus:outline-none aria-[invalid=true]:border-red-600 dark:aria-[invalid=true]:border-red-400';
+const label = 'block text-sm font-semibold';
+const err = 'mt-1 hidden text-sm text-red-700 dark:text-red-300';
 ---
 
-<!-- Placeholder until M2 wires up /api/contact. -->
-<Base title="Contact" description="Start a project with Lauren.">
-  <section class="mx-auto max-w-2xl px-4 pt-10 sm:px-6">
-    <p class="eyebrow">Contact</p>
-    <h1 class="display mt-2 text-5xl font-semibold">Let's talk about your project</h1>
-    <p class="mt-6 text-lg text-ink-2">
-      The contact form is almost ready. Check back in a few days, and thanks for your patience.
-    </p>
-    <div class="mt-10 flex flex-wrap gap-3">
-      <a href="/work-with-me" class="btn-ghost">How I work</a>
-      <a href="/projects" class="btn-ghost">See the work</a>
+<Base title="Contact" description="Start a project with Lauren, or just say hi.">
+  <section class="mx-auto grid max-w-6xl gap-12 px-4 pt-10 sm:px-6 lg:grid-cols-[1fr_1.3fr]">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h1 class="display mt-2 text-5xl leading-tight font-semibold">Let's talk about your project</h1>
+      <p class="mt-6 text-lg text-ink-2">
+        A few sentences is plenty: what you're hoping to build, who it's for, and any deadline. I'll reply
+        by email.
+      </p>
+      <ul class="mt-8 space-y-3 text-ink-2">
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✦</span> Your message comes straight to me, not a sales team.</li>
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✦</span> Nothing is stored on this site. The email is the only copy.</li>
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✦</span> No newsletter, no follow-up sequence.</li>
+      </ul>
+    </div>
+
+    <div class="rounded-3xl border border-line bg-paper-2 p-6 sm:p-8">
+      <form id="contact-form" novalidate data-client-topics={CLIENT_TOPICS.join(',')} data-sitekey={TURNSTILE_SITE_KEY}>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="cf-name" class={label}>Your name</label>
+            <input id="cf-name" name="name" autocomplete="name" required maxlength="100" class={field} aria-describedby="cf-name-err" />
+            <p id="cf-name-err" class={err}></p>
+          </div>
+          <div>
+            <label for="cf-email" class={label}>Email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="254" class={field} aria-describedby="cf-email-err" />
+            <p id="cf-email-err" class={err}></p>
+          </div>
+        </div>
+
+        <div class="mt-5 grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="cf-topic" class={label}>What's this about?</label>
+            <select id="cf-topic" name="topic" class={field} aria-describedby="cf-topic-err">
+              {Object.entries(CONTACT_TOPICS).map(([v, l]) => <option value={v}>{l}</option>)}
+            </select>
+            <p id="cf-topic-err" class={err}></p>
+          </div>
+          <div id="cf-budget-wrap">
+            <label for="cf-budget" class={label}>Budget <span class="font-normal text-ink-2">(optional)</span></label>
+            <select id="cf-budget" name="budget" class={field} aria-describedby="cf-budget-err">
+              <option value="">Prefer not to say</option>
+              {Object.entries(BUDGETS).map(([v, l]) => <option value={v}>{l}</option>)}
+            </select>
+            <p id="cf-budget-err" class={err}></p>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <label for="cf-message" class={label}>Message</label>
+          <textarea id="cf-message" name="message" rows="6" required maxlength="5000" class={field} aria-describedby="cf-message-err" placeholder="I run a small bakery and want a site where people can see this week's menu and pre-order…"></textarea>
+          <p id="cf-message-err" class={err}></p>
+        </div>
+
+        <!-- Honeypot. Off-screen rather than display:none, which some bots skip. -->
+        <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+          <label for="cf-website">Leave this empty</label>
+          <input id="cf-website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div id="cf-turnstile" class="mt-5"></div>
+
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <button type="submit" class="btn-primary disabled:cursor-wait disabled:opacity-60">Send message</button>
+          <p id="cf-status" role="status" aria-live="polite" class="text-sm"></p>
+        </div>
+        <noscript><p class="mt-4 text-sm text-ink-2">The form needs JavaScript for its spam check. Sorry about that.</p></noscript>
+      </form>
+
+      <div id="cf-success" class="hidden" tabindex="-1">
+        <p class="display text-6xl text-accent" aria-hidden="true">✦</p>
+        <h2 class="display mt-4 text-3xl font-semibold">Message sent. Thank you!</h2>
+        <p class="mt-3 text-ink-2">I'll reply to <strong id="cf-success-email" class="text-ink"></strong> soon.</p>
+        <a href="/projects" class="btn-ghost mt-6">Look around while you wait</a>
+      </div>
     </div>
   </section>
 </Base>
+
+<script>
+  import { ContactRequest, type ContactResponse } from '../lib/schemas';
+
+  type TurnstileApi = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    reset: (id?: string) => void;
+  };
+  const w = window as unknown as { turnstile?: TurnstileApi; onTurnstileLoad?: () => void };
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('cf-status')!;
+  const submit = form.querySelector('button[type=submit]') as HTMLButtonElement;
+  const topic = form.elements.namedItem('topic') as HTMLSelectElement;
+  const budgetWrap = document.getElementById('cf-budget-wrap')!;
+  const clientTopics = (form.dataset.clientTopics ?? '').split(',');
+
+  // Prefill from the URL, e.g. /contact?topic=app&message=… (the chat will use this).
+  const params = new URLSearchParams(location.search);
+  const presetTopic = params.get('topic');
+  if (presetTopic && [...topic.options].some((o) => o.value === presetTopic)) topic.value = presetTopic;
+  const presetMessage = params.get('message');
+  if (presetMessage) (form.elements.namedItem('message') as HTMLTextAreaElement).value = presetMessage.slice(0, 5000);
+
+  const syncBudget = () => {
+    const show = clientTopics.includes(topic.value);
+    budgetWrap.hidden = !show;
+    if (!show) (form.elements.namedItem('budget') as HTMLSelectElement).value = '';
+  };
+  topic.addEventListener('change', syncBudget);
+  syncBudget();
+
+  // Turnstile: rendered explicitly so it can match the site theme and stay invisible unless needed.
+  let token = '';
+  let widgetId: string | undefined;
+  w.onTurnstileLoad = () => {
+    widgetId = w.turnstile!.render(document.getElementById('cf-turnstile')!, {
+      sitekey: form.dataset.sitekey,
+      theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
+      appearance: 'interaction-only',
+      callback: (t: string) => (token = t),
+      'expired-callback': () => (token = ''),
+      'error-callback': () => (token = ''),
+    });
+  };
+  const ts = document.createElement('script');
+  ts.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
+  ts.async = true;
+  document.head.append(ts);
+
+  const fieldNames = ['name', 'email', 'topic', 'budget', 'message'] as const;
+  const setErrors = (errors: Partial<Record<string, string>>) => {
+    let first: HTMLElement | null = null;
+    for (const name of fieldNames) {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const msg = document.getElementById(`cf-${name}-err`)!;
+      const text = errors[name];
+      input.setAttribute('aria-invalid', text ? 'true' : 'false');
+      msg.textContent = text ?? '';
+      msg.classList.toggle('hidden', !text);
+      if (text && !first) first = input;
+    }
+    (first as HTMLElement | null)?.focus();
+  };
+
+  const say = (text: string, tone: 'info' | 'error' = 'info') => {
+    status.textContent = text;
+    status.className = `text-sm ${tone === 'error' ? 'text-red-700 dark:text-red-300' : 'text-ink-2'}`;
+  };
+
+  const MESSAGES: Record<string, string> = {
+    rate_limited: 'That was a lot of messages at once. Wait a minute and try again.',
+    bot_check_failed: 'The spam check didn’t go through. Please try again.',
+    send_failed: 'Your message didn’t send because of a problem on my end. Please try again in a few minutes.',
+    bad_request: 'Something went wrong. Please refresh the page and try again.',
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    const payload = {
+      name: data.name,
+      email: data.email,
+      topic: data.topic,
+      budget: data.budget || undefined,
+      message: data.message,
+      website: data.website,
+      turnstileToken: token,
+    };
+
+    const check = ContactRequest.safeParse(payload);
+    if (!check.success) {
+      const errors: Record<string, string> = {};
+      for (const issue of check.error.issues) {
+        const k = String(issue.path[0] ?? '');
+        if (k && !errors[k]) errors[k] = issue.message;
+      }
+      setErrors(errors);
+      say('Please fix the highlighted fields.', 'error');
+      return;
+    }
+    setErrors({});
+    if (!token) {
+      say('Running a quick spam check… try again in a second.');
+      return;
+    }
+
+    submit.disabled = true;
+    say('Sending…');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const body = (await res.json()) as ContactResponse;
+      if (body.ok) {
+        document.getElementById('cf-success-email')!.textContent = check.data.email;
+        form.hidden = true;
+        const done = document.getElementById('cf-success')!;
+        done.classList.remove('hidden');
+        done.focus();
+        return;
+      }
+      if (body.error === 'invalid') {
+        setErrors(body.fields);
+        say('Please fix the highlighted fields.', 'error');
+      } else {
+        say(MESSAGES[body.error] ?? MESSAGES.bad_request!, 'error');
+      }
+    } catch {
+      say('Couldn’t reach the server. Check your connection and try again.', 'error');
+    } finally {
+      submit.disabled = false;
+      // Tokens are single-use, so get a fresh one for the next attempt.
+      token = '';
+      if (w.turnstile) w.turnstile.reset(widgetId);
+    }
+  });
+</script>
