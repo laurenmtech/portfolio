@@ -1,0 +1,9 @@
+# Placeholder Q&A. Feeds both the chat's knowledge and nap mode. Rewrite in M1/M4.
+- id: availability
+  q: Is she taking on new work?
+  a: TODO
+  keywords: [available, availability, hire, hiring, freelance, open]
+- id: stack
+  q: What does she build with?
+  a: TODO
+  keywords: [stack, tech, language, framework, tools]

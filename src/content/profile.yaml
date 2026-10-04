@@ -1,0 +1,24 @@
+# Placeholder copy. Rewrite in M1.
+me:
+  name: Lauren
+  headline: I build web apps, and the AI bits that make them fun.
+  region: US-based, working remote
+  availability: open
+  bio: >-
+    TODO: two or three sentences about who you are and what you like building.
+  skills:
+    - group: Frontend
+      items: [TypeScript, Astro, Next.js, Tailwind]
+    - group: Backend
+      items: [Hono, Cloudflare Workers, Postgres, Supabase]
+    - group: AI
+      items: [LLM integration, prompt engineering, evals]
+  services:
+    - title: Websites
+      blurb: TODO
+    - title: Web apps
+      blurb: TODO
+    - title: AI features
+      blurb: TODO
+  links:
+    github: https://github.com/laurenmtech

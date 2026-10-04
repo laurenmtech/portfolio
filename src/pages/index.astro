@@ -1,0 +1,19 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const profile = await getEntry('profile', 'me');
+if (!profile) throw new Error('src/content/profile.yaml must have an entry with id "me"');
+const { name, headline, region } = profile.data;
+---
+
+<Base>
+  <main class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-4 py-16">
+    <p class="text-sm font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
+      Under construction
+    </p>
+    <h1 class="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Hi, I'm {name}.</h1>
+    <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">{headline}</p>
+    <p class="mt-2 text-sm text-zinc-500">{region}</p>
+  </main>
+</Base>
