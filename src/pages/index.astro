@@ -38,8 +38,8 @@ const [first, second] = featured;
     {
       first?.data.cover && second?.data.cover && (
         <div class="relative mx-auto flex h-[380px] w-full max-w-md justify-center sm:h-[520px]" aria-hidden="true">
-          <PhoneShot src={second.data.cover} alt="" loading="eager" class="absolute top-10 left-2 w-44 rotate-[-8deg] sm:w-56" />
-          <PhoneShot src={first.data.cover} alt="" loading="eager" class="absolute top-0 right-2 w-48 rotate-[5deg] sm:w-60" />
+          <PhoneShot src={second.data.cover} alt="" loading="eager" sizes="(min-width: 640px) 224px, 176px" class="absolute top-10 left-2 w-44 rotate-[-8deg] sm:w-56" />
+          <PhoneShot src={first.data.cover} alt="" loading="eager" sizes="(min-width: 640px) 240px, 192px" class="absolute top-0 right-2 w-48 rotate-[5deg] sm:w-60" />
         </div>
       )
     }

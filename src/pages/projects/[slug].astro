@@ -36,7 +36,7 @@ const next = all[(idx + 1) % all.length];
           {links.repo && <a href={links.repo} class="btn-ghost">View the code</a>}
         </div>
       </div>
-      {cover && <PhoneShot src={cover} alt={coverAlt} loading="eager" class="mx-auto w-60 rotate-2 sm:w-64" />}
+      {cover && <PhoneShot src={cover} alt={coverAlt} loading="eager" sizes="(min-width: 640px) 256px, 240px" class="mx-auto w-60 rotate-2 sm:w-64" />}
     </header>
 
     <div class="mt-16 grid gap-12 lg:grid-cols-[1fr_280px]">

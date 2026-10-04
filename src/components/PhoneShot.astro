@@ -7,17 +7,19 @@ interface Props {
   alt: string;
   class?: string;
   loading?: 'eager' | 'lazy';
+  /** Rendered CSS width(s), for the browser to pick the right file. */
+  sizes: string;
 }
 
-const { src, alt, class: className = '', loading = 'lazy' } = Astro.props;
+const { src, alt, class: className = '', loading = 'lazy', sizes } = Astro.props;
 ---
 
 <div class:list={['rounded-[2.2rem] border border-slab-line bg-slab p-2 shadow-2xl shadow-black/25', className]}>
   <Image
     src={src}
     alt={alt}
-    widths={[300, 600]}
-    sizes="(min-width: 640px) 300px, 70vw"
+    widths={[240, 480, 720]}
+    sizes={sizes}
     loading={loading}
     class="block h-auto w-full rounded-[1.7rem]"
   />
