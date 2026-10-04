@@ -1,5 +1,128 @@
 @import "tailwindcss";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/inter";
 
-@theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+/* Theme is set on <html data-theme> by the inline script in Base.astro. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --paper: #faf7f2;
+  --paper-2: #f1ece3;
+  --ink: #1a1613;
+  --ink-2: #57504a;
+  --line: #e2dbcf;
+  --accent: #b8401a;       /* text-safe on --paper: 5.3:1 */
+  --accent-ink: #ffffff;
+  --accent-soft: #fbeee6;
+  /* Always-dark surfaces (CTA panels, phone bezels), same in both themes. */
+  --slab: #1a1613;
+  --slab-ink: #f3eee7;
+  --slab-accent: #ff8a5b;
+  --slab-line: #3a342e;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: #13110f;
+  --paper-2: #1e1b18;
+  --ink: #f3eee7;
+  --ink-2: #b2a99f;
+  --line: #34302b;
+  --accent: #ff8a5b;       /* text-safe on --paper: 7.6:1 */
+  --accent-ink: #1a0e08;
+  --accent-soft: #3a2218;
+  --slab: #221e1a;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-slab: var(--slab);
+  --color-slab-ink: var(--slab-ink);
+  --color-slab-accent: var(--slab-accent);
+  --color-slab-line: var(--slab-line);
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility display {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 50, "WONK" 1;
+  letter-spacing: -0.02em;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition;
+}
+
+@utility btn-primary {
+  @apply btn bg-accent text-accent-ink hover:brightness-110;
+}
+
+@utility btn-ghost {
+  @apply btn border border-line text-ink hover:border-ink;
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.18em] text-accent uppercase;
+}
+
+/* Long-form case study copy rendered from MDX. */
+@layer components {
+  .prose-case {
+    @apply max-w-[68ch] text-[17px] leading-relaxed text-ink;
+  }
+  .prose-case h2 {
+    @apply display mt-12 mb-3 text-2xl font-semibold;
+  }
+  .prose-case h3 {
+    @apply mt-8 mb-2 text-lg font-semibold;
+  }
+  .prose-case p, .prose-case ul, .prose-case ol {
+    @apply my-4;
+  }
+  .prose-case ul { @apply list-disc pl-5; }
+  .prose-case ol { @apply list-decimal pl-5; }
+  .prose-case li { @apply my-1.5; }
+  .prose-case li::marker { color: var(--accent); }
+  .prose-case a { @apply text-accent underline underline-offset-2; }
+  .prose-case strong { @apply font-semibold; }
+  .prose-case em { @apply italic; }
+  .prose-case code {
+    @apply rounded bg-paper-2 px-1.5 py-0.5 font-mono text-[0.88em];
+  }
+  .prose-case blockquote {
+    @apply my-6 border-l-2 border-accent pl-4 text-ink-2 italic;
+  }
 }

@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PhoneShot from './PhoneShot.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, tagline, stack, cover, status } = project.data;
+---
+
+<article class="group relative flex flex-col overflow-hidden rounded-3xl border border-line bg-paper-2 transition hover:border-ink-2">
+  {
+    cover && (
+      <div class="flex justify-center overflow-hidden px-10 pt-10 pb-0">
+        <PhoneShot
+          src={cover}
+          alt=""
+          class="-mb-24 w-56 rotate-[-2deg] transition duration-500 group-hover:-translate-y-2 group-hover:rotate-0"
+        />
+      </div>
+    )
+  }
+  <div class="relative z-10 flex flex-1 flex-col gap-2 border-t border-line bg-paper p-6">
+    <div class="flex items-center gap-2">
+      <h3 class="display text-2xl font-semibold">
+        <a href={`/projects/${project.id}`} class="after:absolute after:inset-0">{title}</a>
+      </h3>
+      {status === 'live' && <span class="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent">Live</span>}
+    </div>
+    <p class="text-ink-2">{tagline}</p>
+    <p class="mt-auto pt-3 text-xs text-ink-2">{stack.slice(0, 4).join(' · ')}</p>
+  </div>
+</article>

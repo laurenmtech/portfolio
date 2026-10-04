@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import { getProfile } from '../lib/content';
+
+const profile = await getProfile();
+---
+
+<Base title="About" description={`About ${profile.name}: ${profile.headline}`}>
+  <section class="mx-auto max-w-3xl px-4 pt-10 sm:px-6">
+    <p class="eyebrow">About</p>
+    <h1 class="display mt-2 text-5xl font-semibold">Hi, I'm {profile.name}.</h1>
+    <p class="mt-6 text-xl leading-relaxed text-ink-2">{profile.bio}</p>
+    <p class="mt-4 text-sm text-ink-2">{profile.region}</p>
+
+    <h2 class="display mt-16 text-3xl font-semibold">What I work with</h2>
+    <div class="mt-6 grid gap-6 sm:grid-cols-3">
+      {
+        profile.skills.map((g) => (
+          <div>
+            <h3 class="text-xs font-semibold tracking-[0.18em] text-ink-2 uppercase">{g.group}</h3>
+            <ul class="mt-3 space-y-1.5">
+              {g.items.map((i) => (
+                <li>{i}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-16 flex flex-wrap gap-3">
+      <a href="/contact" class="btn-primary">Get in touch</a>
+      {profile.links.github && <a href={profile.links.github} class="btn-ghost" rel="me">GitHub</a>}
+      {profile.links.resume && <a href={profile.links.resume} class="btn-ghost">Résumé (PDF)</a>}
+    </div>
+  </section>
+</Base>

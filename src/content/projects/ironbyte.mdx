@@ -1,0 +1,68 @@
+---
+title: Ironbyte
+tagline: A macro tracker and workout log that lives on your phone
+role: Design, frontend, data pipeline
+stack: [JavaScript, PWA, USDA FoodData Central, Open Food Facts, Python]
+tags: [pwa, offline, privacy, health]
+status: live
+links:
+  live: https://laurenmtech.github.io/ironbyte/
+  repo: https://github.com/laurenmtech/ironbyte
+featured: true
+order: 2
+cover: ../../assets/projects/ironbyte.png
+coverAlt: Ironbyte's diary screen on a phone, showing calories remaining and protein, carb and fat progress bars
+highlights:
+  - 7,793 foods searchable offline
+  - Barcode scanning on Android and iPhone
+  - No accounts, no server, no ads
+  - From idea to daily use in about a week
+---
+
+## The problem
+
+Popular food trackers bury the basics under ads, upsells and account walls, and they
+send everything you eat to someone else's server. I wanted a fast tracker I'd use
+every day: one tap from my home screen, logging a meal in seconds, with nothing to sign up for.
+
+## What I built
+
+An installable app that tracks food and workouts, with all of the data kept on the phone.
+
+- **Food diary** with breakfast, lunch, dinner and snacks, calories remaining, and protein,
+  carbs and fat against your goals. Swipe between days, or copy yesterday's meal in one tap.
+- **7,793 foods built in.** The USDA's generic food database is bundled into the app, so
+  search works with no signal. Brand and restaurant items come from the USDA's live API.
+- **Barcode scanning** that uses the phone's built-in scanner on Android and a bundled
+  fallback on iPhone, with two databases behind it.
+- **Recipes** built from weighed ingredients, then logged by the gram or by the piece.
+- **Share a food or recipe as a link.** The food is packed into the link itself, so nothing
+  is uploaded anywhere.
+- **Workout logger** with an exercise library, routines, supersets and a rest timer. Each set
+  shows what you lifted last time.
+- **Trends** over 7 and 30 days.
+
+## Decisions worth explaining
+
+### Offline first, not offline eventually
+
+The food database is preprocessed by a small Python script into a compact file that ships
+with the app. Search is instant and works in a basement gym. The network is only for
+extras, like brand-name foods and barcodes.
+
+### Your data stays yours
+
+There's no account and no server. Everything lives in the phone's storage, with one-tap
+export for backups and a gentle reminder if you haven't backed up in 30 days. Sharing
+uses links that carry the data inside them, so even sharing doesn't upload anything.
+
+### It works on the phone you actually have
+
+iPhones don't support the browser's built-in barcode scanner, so the app checks what the
+phone can do and switches to a bundled scanner when it has to. Scanning works the same on
+both, offline included.
+
+## What this means for your project
+
+Not every app needs a backend. If yours doesn't, it can be faster, cheaper to run (often
+free), and more private, and I'll tell you honestly when that's the case.

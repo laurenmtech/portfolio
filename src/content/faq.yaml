@@ -1,9 +1,41 @@
-# Placeholder Q&A. Feeds both the chat's knowledge and nap mode. Rewrite in M1/M4.
+# Feeds the "Services" page FAQ now, and the chat + nap mode at M4. Treat as public.
 - id: availability
-  q: Is she taking on new work?
-  a: TODO
-  keywords: [available, availability, hire, hiring, freelance, open]
+  q: Are you taking on new projects?
+  a: Yes. Send a short note about what you have in mind and I'll reply within a couple of days.
+  keywords: [available, availability, hire, hiring, freelance, open, book]
+- id: cost
+  q: How much does a project cost?
+  a: >-
+    It depends on scope, so I quote per project after a short call. You get a
+    written plan and a fixed price before any work starts, so there are no surprises.
+  keywords: [cost, price, pricing, rate, rates, budget, quote, expensive]
+- id: ownership
+  q: Who owns the site when it's done?
+  a: >-
+    You do. The code, the domain and every account are in your name. No lock-in,
+    and no monthly fee to me just to keep it online.
+  keywords: [own, ownership, lock-in, handoff, accounts, domain]
+- id: hosting
+  q: What does hosting cost?
+  a: >-
+    Most sites I build run on free tiers (Cloudflare, GitHub Pages). If yours
+    needs paid services, you'll see those costs in the plan before we start.
+  keywords: [hosting, host, server, monthly, free]
+- id: ai-cost
+  q: Won't an AI feature run up a huge bill?
+  a: >-
+    Not the way I build them. Every AI feature has hard daily caps enforced in
+    code, caches repeat answers, and degrades gracefully when it hits a limit.
+  keywords: [ai, bill, cost, expensive, cap, limit, chatgpt, claude]
+- id: updates
+  q: Can I update the content myself?
+  a: >-
+    Yes. We'll pick the setup that fits how you work, from editing simple text
+    files to a lightweight editor.
+  keywords: [update, edit, cms, content, change]
 - id: stack
-  q: What does she build with?
-  a: TODO
-  keywords: [stack, tech, language, framework, tools]
+  q: What do you build with?
+  a: >-
+    Whatever fits the job. Often that's plain JavaScript or TypeScript with
+    Astro, deployed on Cloudflare, plus Firebase or Postgres when there's data to store.
+  keywords: [stack, tech, language, framework, tools, wordpress]

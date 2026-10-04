@@ -1,19 +1,90 @@
 ---
-import { getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import PhoneShot from '../components/PhoneShot.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getProfile, getProjects } from '../lib/content';
 
-const profile = await getEntry('profile', 'me');
-if (!profile) throw new Error('src/content/profile.yaml must have an entry with id "me"');
-const { name, headline, region } = profile.data;
+const profile = await getProfile();
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured);
+const [first, second] = featured;
 ---
 
 <Base>
-  <main class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-4 py-16">
-    <p class="text-sm font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
-      Under construction
-    </p>
-    <h1 class="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">Hi, I'm {name}.</h1>
-    <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">{headline}</p>
-    <p class="mt-2 text-sm text-zinc-500">{region}</p>
-  </main>
+  <section class="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-20 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:pt-16">
+    <div>
+      {
+        profile.availability !== 'closed' && (
+          <p class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-sm text-ink-2">
+            <span class="size-2 rounded-full bg-emerald-500" aria-hidden="true" />
+            {profile.availability === 'open' ? 'Taking on new projects' : 'Limited availability'}
+          </p>
+        )
+      }
+      <h1 class="display mt-6 text-5xl leading-[1.02] font-semibold sm:text-6xl lg:text-7xl">
+        I build web apps people keep on their <span class="text-accent italic">home screen.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-2">
+        Hi, I'm {profile.name}. I design and build fast, installable apps that work offline and respect the
+        people using them, with AI where it actually helps.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/contact" class="btn-primary">Start a project</a>
+        <a href="/projects" class="btn-ghost">See the work</a>
+      </div>
+      <p class="mt-6 text-sm text-ink-2">{profile.region}</p>
+    </div>
+
+    {
+      first?.data.cover && second?.data.cover && (
+        <div class="relative mx-auto flex h-[380px] w-full max-w-md justify-center sm:h-[520px]" aria-hidden="true">
+          <PhoneShot src={second.data.cover} alt="" loading="eager" class="absolute top-10 left-2 w-44 rotate-[-8deg] sm:w-56" />
+          <PhoneShot src={first.data.cover} alt="" loading="eager" class="absolute top-0 right-2 w-48 rotate-[5deg] sm:w-60" />
+        </div>
+      )
+    }
+  </section>
+
+  <section class="border-y border-line bg-paper-2">
+    <div class="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 md:grid-cols-3">
+      {
+        profile.services.map((s, i) => (
+          <div>
+            <p class="display text-4xl text-accent">0{i + 1}</p>
+            <h2 class="mt-3 text-lg font-semibold">{s.title}</h2>
+            <p class="mt-2 text-ink-2">{s.blurb}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Selected work</p>
+        <h2 class="display mt-2 text-4xl font-semibold">Things I've shipped</h2>
+      </div>
+      <a href="/projects" class="text-sm font-semibold text-accent hover:underline">All projects →</a>
+    </div>
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      {featured.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="rounded-3xl border border-slab-line bg-slab px-6 py-14 text-slab-ink sm:px-12">
+      <p class="eyebrow !text-slab-accent">Got something in mind?</p>
+      <h2 class="display mt-3 max-w-2xl text-4xl font-semibold">
+        Tell me what you're trying to build. I'll tell you honestly how I'd do it.
+      </h2>
+      <p class="mt-4 max-w-xl opacity-75">
+        Every project starts with a written plan and a fixed quote, and you own everything at the end.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/contact" class="btn-primary">Start a project</a>
+        <a href="/work-with-me" class="btn border border-slab-ink/30 text-slab-ink hover:border-slab-ink">How it works</a>
+      </div>
+    </div>
+  </section>
 </Base>

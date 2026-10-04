@@ -1,0 +1,81 @@
+---
+title: Otherworld Bookshelf
+tagline: A private reading shelf, so you remember what you read
+role: Design, frontend, backend, AI features
+stack: [JavaScript (ES modules), PWA, Firebase, Cloudflare Workers, Claude API, Open Library]
+tags: [pwa, ai, offline, privacy]
+status: live
+links:
+  live: https://laurenmtech.github.io/OtherworldBookshelf/
+  repo: https://github.com/laurenmtech/OtherworldBookshelf
+featured: true
+order: 1
+cover: ../../assets/projects/otherworld.png
+coverAlt: Otherworld Bookshelf on a phone, showing three current reads with their covers
+highlights:
+  - "16/16 correct first search results, up from 11/16"
+  - Works fully offline, installable on any phone
+  - AI suggestions checked against a real catalogue
+  - 5 themes, each automatically tested for WCAG AA contrast
+chatNotes: >-
+  Built with no build step and no dependencies, under a 150 KB JavaScript budget.
+  The backend writes no logs; the only record it keeps is a per-day request
+  counter that expires after 48 hours.
+---
+
+## The problem
+
+If you read on an e-reader or listen to audiobooks, no cover ever sits on a shelf,
+and the titles slip away. Someone asks what you've read lately and you've got nothing.
+Goodreads exists, but it's a social network with a book log attached. I wanted the
+opposite: something private, quick and pleasant enough to actually keep using.
+
+## What I built
+
+An installable app that opens from the home screen and works with no signal at all.
+
+- **Search and add in one tap.** Type a title, pick it, and the cover, author, year,
+  genre and series all arrive filled in.
+- **Up to three current reads**, because reading three things at once is normal.
+- **Finish a book or set it down.** "Not right now" puts it back on the pile; "not for me"
+  records it and never suggests it again.
+- **Series travel together.** Finish a volume and the next one is already waiting.
+- **Library links.** Every book on the to-read pile links to your library or bookshop,
+  and where Libby can say, whether it's available and how long the wait is.
+- **"What should I read?"** Suggestions built from your own taste.
+- **Five complete themes** you can switch any time.
+
+## Decisions worth explaining
+
+### Search that finds the book you meant
+
+The obvious way to rank search results (most-printed edition first) answers "dune" with
+*Peril at End House* and "the way of kings" with the Bible. I wrote a ranking that scores
+how well the title and author match what you typed, and only then falls back to popularity.
+On sixteen known titles it gets the right book first **16 times out of 16**, against 11 for
+the catalogue's own ordering.
+
+### AI that's checked, not trusted
+
+The recommender and series lookups use Claude, but nothing it says reaches the screen
+until it's been checked against a real book catalogue. A suggested book that doesn't exist
+is dropped. A series list that doesn't contain the book we asked about is thrown away as
+the wrong series. And when a series lookup fails, the app simply carries on without it:
+no error message, no gap on screen.
+
+### Private by design
+
+Your shelf lives on your device. Signing in only adds sync between your own devices.
+The one server sees a short summary of your taste, never your shelf, and keeps no logs.
+Its only record is a per-day request counter that deletes itself after 48 hours. That
+counter is also a spending cap, so the AI bill can't run away.
+
+### Quality checks that run themselves
+
+A pre-push check runs the test suite, audits all five themes for WCAG AA contrast, and
+refuses to ship a change that would leave installed phones running stale code.
+
+## What this means for your project
+
+If you want an app people actually open every day, that keeps working offline, and that
+uses AI without inventing things or surprising you with a bill, this is how I'd build it.

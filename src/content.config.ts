@@ -18,6 +18,9 @@ const projects = defineCollection({
       featured: z.boolean().default(false),
       order: z.number().int().default(100),
       cover: image().optional(),
+      coverAlt: z.string().default(''),
+      // Three or four short proof points shown beside the case study.
+      highlights: z.array(z.string()).default([]),
       // Extra facts the chat may use. Treat as public: anyone can get the chat to repeat it.
       chatNotes: z.string().optional(),
       draft: z.boolean().default(false),

@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { getProfile } from '../lib/content';
+
+const profile = await getProfile();
+const faq = await getCollection('faq');
+
+const steps = [
+  {
+    title: 'Talk',
+    body: 'A free, no-pressure conversation about what you need, who it\'s for, and what "done" looks like.',
+  },
+  {
+    title: 'Plan',
+    body: 'You get a written spec and plan: what I\'ll build, in what order, what it costs to run, and a fixed quote.',
+  },
+  {
+    title: 'Build in the open',
+    body: 'A live preview link from the first week, so you see real progress instead of waiting for a big reveal.',
+  },
+  {
+    title: 'Launch & hand off',
+    body: 'Your domain, your accounts, your code, plus a short guide to making changes yourself.',
+  },
+];
+
+const promises = [
+  ['Plain-language updates', 'No jargon. You always know what\'s done, what\'s next, and why.'],
+  ['No lock-in', 'Everything is in your name. You can take it to any developer, any time.'],
+  ['Accessible by default', 'Keyboard and screen-reader friendly, with readable contrast in light and dark.'],
+  ['Costs you can predict', 'Free hosting where possible, and hard spending caps on anything metered.'],
+];
+---
+
+<Base title="Services" description="How Lauren works with clients: websites, web apps and AI features.">
+  <section class="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
+    <p class="eyebrow">Services</p>
+    <h1 class="display mt-2 max-w-3xl text-5xl leading-tight font-semibold">
+      You bring the idea. I'll design it, build it, and hand you the keys.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-ink-2">
+      I work with small businesses, creators and teams who want something that feels custom without an
+      agency price tag or an agency's handoffs.
+    </p>
+  </section>
+
+  <section class="mx-auto mt-16 grid max-w-6xl gap-6 px-4 sm:px-6 md:grid-cols-3">
+    {
+      profile.services.map((s) => (
+        <div class="rounded-3xl border border-line bg-paper-2 p-6">
+          <h2 class="display text-2xl font-semibold">{s.title}</h2>
+          <p class="mt-3 text-ink-2">{s.blurb}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <p class="eyebrow">How it works</p>
+    <h2 class="display mt-2 text-4xl font-semibold">Four steps, no surprises</h2>
+    <ol class="mt-10 grid gap-8 md:grid-cols-4">
+      {
+        steps.map((s, i) => (
+          <li class="border-t-2 border-accent pt-4">
+            <p class="text-sm font-semibold text-accent">Step {i + 1}</p>
+            <h3 class="mt-1 text-lg font-semibold">{s.title}</h3>
+            <p class="mt-2 text-ink-2">{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <div class="grid gap-x-12 gap-y-8 rounded-3xl border border-slab-line bg-slab px-6 py-12 text-slab-ink sm:grid-cols-2 sm:px-12">
+      <h2 class="display text-3xl font-semibold sm:col-span-2">What you can count on</h2>
+      {
+        promises.map(([t, b]) => (
+          <div>
+            <h3 class="font-semibold">{t}</h3>
+            <p class="mt-1 opacity-75">{b}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mx-auto mt-24 max-w-3xl px-4 sm:px-6">
+    <h2 class="display text-4xl font-semibold">Questions people ask</h2>
+    <div class="mt-8 divide-y divide-line border-y border-line">
+      {
+        faq.map(({ data }) => (
+          <details class="group py-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
+              {data.q}
+              <span class="text-accent transition group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <p class="mt-3 text-ink-2">{data.a}</p>
+          </details>
+        ))
+      }
+    </div>
+    <div class="mt-12 text-center">
+      <a href="/contact" class="btn-primary">Start a project</a>
+    </div>
+  </section>
+</Base>
