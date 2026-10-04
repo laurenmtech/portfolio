@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const CONTACT_TOPICS = {
-  website: 'A website',
-  app: 'A web app',
+  website: 'A website (new or upgraded)',
+  app: 'A web app or portal',
   ai: 'An AI feature',
   support: 'Help with something I already have',
   job: 'A job opportunity',

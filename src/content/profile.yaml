@@ -1,14 +1,15 @@
 # Everything here is public, and the chat will be able to repeat it (spec §9).
 me:
   name: Lauren
-  headline: I build web apps people keep on their home screen, and I stick around after launch.
+  headline: I build websites and web apps that do more for your business, and I stick around after launch.
   region: US-based, working remote
   availability: open
   # DRAFT: rewrite in your own voice. Only facts from the projects are used here.
   bio: >-
     I'm a developer who designs and builds the whole thing: the interface, the
     data, the backend, and the AI features when they earn their place. I like
-    apps that open instantly, work offline, and respect the people using them.
+    sites and apps that are fast on any phone, easy to use, and respect the
+    people using them.
     And I like sticking around after launch: helping something grow is the
     best part.
   skills:
@@ -19,15 +20,15 @@ me:
     - group: AI
       items: [Claude API, OpenAI API, prompt design, output verification, cost controls]
   services:
-    - title: Websites that load instantly
+    - title: Make your site do more
       blurb: >-
-        Marketing sites, portfolios and small-business sites that are fast on a
-        phone, easy for you to update, and cheap (often free) to host.
-    - title: Web apps that feel native
+        Already have a site? Add what your customers keep asking for: booking,
+        menus that update themselves, search, and forms that land in the right inbox.
+    - title: Portals and custom tools
       blurb: >-
-        Installable apps that open from the home screen, work without signal, and
-        keep people's data on their own device unless there's a reason not to.
-    - title: AI features that don't make things up
+        Logins for your clients, dashboards for your team, and the small tools
+        that replace a messy spreadsheet.
+    - title: AI where it actually helps
       blurb: >-
         Recommendations, search and assistants that check their answers against
         real data, fail quietly, and come with a spending cap built in.

@@ -71,7 +71,7 @@ describe('POST /api/contact', () => {
     expect(sent.to).toBe('me@example.com');
     expect(sent.from.email).toBe('contact@site.test');
     expect(sent.replyTo).toEqual({ name: 'Ada', email: 'ada@example.com' });
-    expect(sent.subject).toBe('Portfolio: A web app — Ada');
+    expect(sent.subject).toBe('Portfolio: A web app or portal — Ada');
     expect(sent.text).toContain('Budget: $2k–5k');
   });
 
