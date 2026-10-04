@@ -1,45 +1,57 @@
 # Feeds the "Services" page FAQ now, and the chat + nap mode at M4. Treat as public.
 - id: availability
+  order: 1
   q: Are you taking on new projects?
-  a: Yes. Send a short note about what you have in mind and I'll reply within a couple of days.
+  a: Yes. Send a short note about what you have in mind and I'll reply by email.
   keywords: [available, availability, hire, hiring, freelance, open, book]
+- id: after-launch
+  order: 2
+  q: What happens after launch?
+  a: >-
+    I stay in your corner. Most clients just message me when they need
+    something, and I tell them what it involves before I start. If you'd like
+    regular help, there's an optional monthly plan: a set amount of my time and
+    a check-in each month. You can switch between the two, or stop, any time.
+  keywords: [after, launch, support, maintenance, ongoing, retainer, monthly, plan, help, updates, fix, later]
+- id: existing
+  order: 3
+  q: Can you help with a site or app I already have?
+  a: >-
+    Often, yes. Tell me what it's built with and what's bugging you, and I'll
+    give you an honest read on whether I'm the right person to help.
+  keywords: [existing, already, current, inherited, old, broken, takeover, fix]
 - id: cost
+  order: 4
   q: How much does a project cost?
   a: >-
     It depends on scope, so I quote per project after a short call. You get a
-    written plan and a fixed price before any work starts, so there are no surprises.
+    written plan and a fixed price before any work starts, so there are no
+    surprises. Help after launch is pay-as-you-go, or the optional monthly plan.
   keywords: [cost, price, pricing, rate, rates, budget, quote, expensive]
 - id: ownership
+  order: 5
   q: Who owns the site when it's done?
   a: >-
-    You do. The code, the domain and every account are in your name. No lock-in,
-    and no monthly fee to me just to keep it online.
+    You do. The code, the domain and every account are in your name. I'm happy
+    to keep helping for as long as you want, but you'll never need me just to
+    keep the site online.
   keywords: [own, ownership, lock-in, handoff, accounts, domain]
 - id: hosting
+  order: 6
   q: What does hosting cost?
   a: >-
     Most sites I build run on free tiers (Cloudflare, GitHub Pages). If yours
     needs paid services, you'll see those costs in the plan before we start.
   keywords: [hosting, host, server, monthly, free]
-- id: ai-cost
-  q: Won't an AI feature run up a huge bill?
-  a: >-
-    Not the way I build them. Every AI feature has hard daily caps enforced in
-    code, caches repeat answers, and degrades gracefully when it hits a limit.
-  keywords: [ai, bill, cost, expensive, cap, limit, chatgpt, claude]
 - id: updates
+  order: 7
   q: Can I update the content myself?
   a: >-
     Yes. We'll pick the setup that fits how you work, from editing simple text
-    files to a lightweight editor.
+    files to a lightweight editor. And if you'd rather not, just send it to me.
   keywords: [update, edit, cms, content, change]
-- id: stack
-  q: What do you build with?
-  a: >-
-    Whatever fits the job. Often that's plain JavaScript or TypeScript with
-    Astro, deployed on Cloudflare, plus Firebase or Postgres when there's data to store.
-  keywords: [stack, tech, language, framework, tools, wordpress]
 - id: ai-tools
+  order: 8
   q: Do you use AI to write code?
   a: >-
     Yes. I use Claude as a pair programmer: it drafts, I decide. Nothing ships
@@ -50,3 +62,17 @@
     allow it at all, I'm probably not the right fit, and it's better we both know
     that up front.
   keywords: [ai, claude, chatgpt, copilot, generated, written, tools, vibe]
+- id: ai-cost
+  order: 9
+  q: Won't an AI feature run up a huge bill?
+  a: >-
+    Not the way I build them. Every AI feature has hard daily caps enforced in
+    code, caches repeat answers, and degrades gracefully when it hits a limit.
+  keywords: [ai, bill, cost, expensive, cap, limit, chatgpt, claude]
+- id: stack
+  order: 10
+  q: What do you build with?
+  a: >-
+    Whatever fits the job. Often that's plain JavaScript or TypeScript with
+    Astro, deployed on Cloudflare, plus Firebase or Postgres when there's data to store.
+  keywords: [stack, tech, language, framework, tools, wordpress]

@@ -50,6 +50,8 @@ const faq = defineCollection({
     a: z.string(),
     // Keywords for nap-mode matching when the LLM is unavailable.
     keywords: z.array(z.string()).default([]),
+    // Display order on the Services page (lowest first).
+    order: z.number().int().default(100),
   }),
 });
 

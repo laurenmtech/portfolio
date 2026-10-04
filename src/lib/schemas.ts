@@ -4,6 +4,7 @@ export const CONTACT_TOPICS = {
   website: 'A website',
   app: 'A web app',
   ai: 'An AI feature',
+  support: 'Help with something I already have',
   job: 'A job opportunity',
   hi: 'Just saying hi',
 } as const;

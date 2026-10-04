@@ -1,15 +1,16 @@
 # Everything here is public, and the chat will be able to repeat it (spec §9).
 me:
   name: Lauren
-  headline: I build web apps people keep on their home screen.
+  headline: I build web apps people keep on their home screen, and I stick around after launch.
   region: US-based, working remote
   availability: open
   # DRAFT: rewrite in your own voice. Only facts from the projects are used here.
   bio: >-
     I'm a developer who designs and builds the whole thing: the interface, the
     data, the backend, and the AI features when they earn their place. I like
-    apps that open instantly, work offline, respect the people using them, and
-    keep working long after launch.
+    apps that open instantly, work offline, and respect the people using them.
+    And I like sticking around after launch: helping something grow is the
+    best part.
   skills:
     - group: Frontend
       items: [JavaScript, TypeScript, HTML & CSS, Astro, Next.js, Tailwind, PWAs, accessibility]
